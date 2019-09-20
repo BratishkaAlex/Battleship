@@ -10,7 +10,6 @@ public class BaseTest {
     @BeforeTest
     public void setUpBrowser() {
         Browser.maximize();
-        Waiter.implicitWait(Integer.parseInt(PropertyManager.getConfigProperty("timeout")));
     }
 
     @AfterTest

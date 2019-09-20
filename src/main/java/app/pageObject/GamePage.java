@@ -12,6 +12,8 @@ import org.openqa.selenium.WebElement;
 
 import java.util.List;
 
+import static framework.utils.LoggerUtil.LOGGER;
+
 public class GamePage {
     private NotificationArea notificationArea;
     private By emptyEnemyCellsLoc = By.cssSelector(".battlefield__rival .battlefield-table .battlefield-cell__empty");
@@ -37,40 +39,31 @@ public class GamePage {
         return new Cell(loc, "Cell of enemy battleground");
     }
 
+    private void runByDiagonal(int x, int y) {
+        int border = y + 1;
+        for (; x < border; x++, y--) {
+            notificationArea.waitForYourMove();
+            try {
+                getEnemyCell(By.xpath(String.format(PATT, y, x))).click();
+                LOGGER.info(String.format("Shot by cell x=%d y=%d", x, y));
+            } catch (NoSuchElementException e) {
+                continue;
+            }
+        }
+    }
+
     public void run() {
-        for (int x = 0, y = 3; x < 4; x++, y--) {
-            notificationArea.waitForYourMove();
-            Waiter.implicitWait(1);
-            try {
-                getEnemyCell(By.xpath(String.format(PATT, y, x))).click();
-            } catch (NoSuchElementException e) {
-                continue;
-            }
+        runByDiagonal(0, 3);
+        runByDiagonal(0, 7);
+        runByDiagonal(2, 9);
+        runByDiagonal(6, 9);
+        runByDiagonal(0, 1);
+        runByDiagonal(0, 5);
+        runByDiagonal(0, 9);
+        runByDiagonal(4, 9);
+        runByDiagonal(8, 9);
+        for (int i = 0; i < 40; i++) {
+            play();
         }
-        for (int x = 0, y = 7; x < 8; x++, y--) {
-            notificationArea.waitForYourMove();
-            try {
-                getEnemyCell(By.xpath(String.format(PATT, y, x))).click();
-            } catch (NoSuchElementException e) {
-                continue;
-            }
-        }
-        for (int x = 2, y = 9; x < 10; x++, y--) {
-            notificationArea.waitForYourMove();
-            try {
-                getEnemyCell(By.xpath(String.format(PATT, y, x))).click();
-            } catch (NoSuchElementException e) {
-                continue;
-            }
-        }
-        for (int x = 6, y = 9; x < 10; x++, y--) {
-            notificationArea.waitForYourMove();
-            try {
-                getEnemyCell(By.xpath(String.format(PATT, y, x))).click();
-            } catch (NoSuchElementException e) {
-                continue;
-            }
-        }
-        Waiter.implicitWait(Integer.parseInt(PropertyManager.getConfigProperty("timeout")));
     }
 }
