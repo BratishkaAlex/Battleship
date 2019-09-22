@@ -1,8 +1,6 @@
 package framework.base;
 
 import framework.browser.Browser;
-import framework.utils.PropertyManager;
-import framework.utils.Waiter;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 

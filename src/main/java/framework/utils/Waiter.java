@@ -1,6 +1,7 @@
 package framework.utils;
 
 import com.google.common.base.Function;
+import framework.base.BaseElement;
 import framework.browser.Browser;
 import framework.mail.EmailReader;
 import framework.mail.Mail;
@@ -42,13 +43,19 @@ public class Waiter {
 
     public static void waitForFile(File file) {
         FluentWait wait = new FluentWait(Browser.getDriver()).withTimeout(timeout, TimeUnit.SECONDS).
-                pollingEvery(1, TimeUnit.SECONDS);
+            pollingEvery(1, TimeUnit.SECONDS);
         wait.until((Function) (webDriver) -> file.exists());
     }
 
     public static void waitForMail(Mail mail) {
         FluentWait wait = new FluentWait(Browser.getDriver()).withTimeout(timeoutForMail, TimeUnit.SECONDS).
-                pollingEvery(1, TimeUnit.SECONDS);
+            pollingEvery(1, TimeUnit.SECONDS);
         wait.until((Function) (webDriver) -> EmailReader.isMailSend(mail));
+    }
+
+    public static void waitWhileElementProcessing(BaseElement element) {
+        FluentWait wait = new FluentWait(Browser.getDriver()).withTimeout(timeout, TimeUnit.SECONDS).
+            pollingEvery(1, TimeUnit.SECONDS);
+        wait.until((Function) (webDriver) -> !element.getAttribute("class").contains("processed"));
     }
 }

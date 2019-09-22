@@ -25,6 +25,10 @@ public abstract class BaseElement {
         return Browser.getDriver().findElements(loc);
     }
 
+    public static int countOfSuchElements(By loc) {
+        return Browser.getDriver().findElements(loc).size();
+    }
+
     public boolean isDisplayed() {
         LOGGER.info(String.format("Checking displaying of %s", name));
         return webElement.isDisplayed();
@@ -62,7 +66,7 @@ public abstract class BaseElement {
         return this.webElement;
     }
 
-    public boolean isEnabled(){
+    public boolean isEnabled() {
         return webElement.isEnabled();
     }
 }
