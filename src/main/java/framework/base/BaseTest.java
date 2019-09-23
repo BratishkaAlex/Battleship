@@ -4,7 +4,7 @@ import framework.browser.Browser;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 
-public class BaseTest {
+public abstract class BaseTest {
     @BeforeTest
     public void setUpBrowser() {
         Browser.maximize();
