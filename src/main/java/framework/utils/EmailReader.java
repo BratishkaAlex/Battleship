@@ -1,8 +1,16 @@
-package framework.mail;
+package framework.utils;
 
-import framework.utils.PropertyManager;
+import framework.models.Mail;
 
-import javax.mail.*;
+import javax.mail.Authenticator;
+import javax.mail.BodyPart;
+import javax.mail.Flags;
+import javax.mail.Folder;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Store;
 import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
 
@@ -10,7 +18,7 @@ import static framework.utils.LoggerUtil.LOGGER;
 
 public class EmailReader {
 
-    public static void delete(Mail mail) {
+    public static void deleteAllMails(Mail mail) {
         try {
             Session emailSession = Session.getInstance(PropertyManager.getPropertiesForMail(), new Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {
@@ -34,7 +42,7 @@ public class EmailReader {
         }
     }
 
-    public static String check(Mail mail) {
+    public static String getFirstMail(Mail mail) {
         try {
             Session emailSession = Session.getInstance(PropertyManager.getPropertiesForMail(), new Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {
@@ -62,7 +70,7 @@ public class EmailReader {
 
     public static boolean isMailSend(Mail mail) {
         try {
-            check(mail);
+            getFirstMail(mail);
             return true;
         } catch (IllegalStateException e) {
             LOGGER.error(e.getMessage());

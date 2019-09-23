@@ -1,12 +1,12 @@
 package app.pageObject;
 
-import app.enums.Enums.CellStatus;
 import app.forms.NotificationArea;
 import framework.elements.Button;
 import framework.utils.Waiter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementClickInterceptedException;
 
+import static app.enums.CellStatus.CellStatuses;
 import static framework.base.BaseElement.countOfSuchElements;
 import static framework.utils.LoggerUtil.LOGGER;
 import static framework.utils.MathUtils.getRandomInt;
@@ -160,14 +160,14 @@ public class GamePage {
     }
 
     private boolean checkForKill(Button cell) {
-        return cell.getAttribute(CLASS).contains(CellStatus.DONE.getStatus());
+        return cell.getAttribute(CLASS).contains(CellStatuses.DONE.getStatus());
     }
 
     private boolean checkForEmptyCell(Button cell) {
-        return cell.getAttribute(CLASS).contains(CellStatus.EMPTY.getStatus());
+        return cell.getAttribute(CLASS).contains(CellStatuses.EMPTY.getStatus());
     }
 
     private boolean checkForHit(Button cell) {
-        return cell.getAttribute(CLASS).contains(CellStatus.HIT.getStatus());
+        return cell.getAttribute(CLASS).contains(CellStatuses.HIT.getStatus());
     }
 }

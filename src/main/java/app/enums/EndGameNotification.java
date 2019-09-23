@@ -1,6 +1,6 @@
 package app.enums;
 
-public class Enums {
+public class EndGameNotification {
     public enum EndGameNotificationMessages {
         WIN("You win"), LOSE("You lose"), ENEMY_LEAVE("Enemy has left the game"), SERVER_ERROR("Server error"), GAME_ERROR("Game error");
         private final String message;
@@ -11,19 +11,6 @@ public class Enums {
 
         public String getMessage() {
             return this.message;
-        }
-    }
-
-    public enum CellStatus {
-        DONE("done"), EMPTY("empty"), HIT("hit");
-        private final String status;
-
-        CellStatus(String status) {
-            this.status = status;
-        }
-
-        public String getStatus() {
-            return this.status;
         }
     }
 }
