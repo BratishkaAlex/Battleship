@@ -12,6 +12,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import static framework.elements.elementsAttributes.Attributes.CLASS;
+
 public class Waiter {
 
     private static int timeout = Integer.parseInt(PropertyManager.getConfigProperty("timeout"));
@@ -42,19 +44,19 @@ public class Waiter {
 
     public static void waitForDownloadFile(File file) {
         FluentWait wait = new FluentWait(Browser.getDriver()).withTimeout(timeout, TimeUnit.SECONDS).
-            pollingEvery(1, TimeUnit.SECONDS);
+                pollingEvery(1, TimeUnit.SECONDS);
         wait.until((Function) (webDriver) -> file.exists());
     }
 
     public static void waitWhileMailReceived(Mail mail) {
         FluentWait wait = new FluentWait(Browser.getDriver()).withTimeout(timeoutForMail, TimeUnit.SECONDS).
-            pollingEvery(1, TimeUnit.SECONDS);
+                pollingEvery(1, TimeUnit.SECONDS);
         wait.until((Function) (webDriver) -> EmailReader.isMailSend(mail));
     }
 
     public static void waitWhileElementProcessing(BaseElement element) {
         FluentWait wait = new FluentWait(Browser.getDriver()).withTimeout(timeout, TimeUnit.SECONDS).
-            pollingEvery(1, TimeUnit.SECONDS);
-        wait.until((Function) (webDriver) -> !element.getAttribute("class").contains("processed"));
+                pollingEvery(1, TimeUnit.SECONDS);
+        wait.until((Function) (webDriver) -> !element.getAttribute(CLASS).contains("processed"));
     }
 }

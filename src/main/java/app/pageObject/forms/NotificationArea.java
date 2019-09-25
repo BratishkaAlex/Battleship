@@ -1,6 +1,7 @@
-package app.forms;
+package app.pageObject.forms;
 
 import framework.elements.Label;
+import framework.utils.Waiter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 
@@ -19,15 +20,15 @@ public class NotificationArea {
 
     public String[] getEndGameNotification() {
         if (getLabelYouWin().isDisplayed()) {
-            return new String[] {Boolean.TRUE.toString(), EndGameNotificationMessages.WIN.getMessage()};
+            return new String[]{Boolean.TRUE.toString(), EndGameNotificationMessages.WIN.getMessage()};
         } else if (getLabelYouLose().isDisplayed()) {
-            return new String[] {Boolean.FALSE.toString(), EndGameNotificationMessages.LOSE.getMessage()};
+            return new String[]{Boolean.FALSE.toString(), EndGameNotificationMessages.LOSE.getMessage()};
         } else if (getLabelEnemyLeave().isDisplayed()) {
-            return new String[] {Boolean.FALSE.toString(), EndGameNotificationMessages.ENEMY_LEAVE.getMessage()};
+            return new String[]{Boolean.FALSE.toString(), EndGameNotificationMessages.ENEMY_LEAVE.getMessage()};
         } else if (getLabelServerError().isDisplayed()) {
-            return new String[] {Boolean.FALSE.toString(), EndGameNotificationMessages.SERVER_ERROR.getMessage()};
+            return new String[]{Boolean.FALSE.toString(), EndGameNotificationMessages.SERVER_ERROR.getMessage()};
         } else if (getLabelGameError().isDisplayed()) {
-            return new String[] {Boolean.FALSE.toString(), EndGameNotificationMessages.GAME_ERROR.getMessage()};
+            return new String[]{Boolean.FALSE.toString(), EndGameNotificationMessages.GAME_ERROR.getMessage()};
         }
         throw new IllegalArgumentException("Unknown notification");
     }
@@ -35,26 +36,20 @@ public class NotificationArea {
     public boolean checkForEndGameNotification() {
         try {
             return getLabelYouWin().isDisplayed() || getLabelYouLose().isDisplayed() || getLabelEnemyLeave().isDisplayed() ||
-                getLabelServerError().isDisplayed() || getLabelGameError().isDisplayed();
+                    getLabelServerError().isDisplayed() || getLabelGameError().isDisplayed();
         } catch (NoSuchElementException e) {
             return false;
         }
     }
 
-    public By getConnectionNotificationLoc() {
-        return connectionNotificationLoc;
+    public void waitForEnemyJoinedTheGame() {
+        Waiter.waitUntilElementIsVisible(connectionNotificationLoc);
+        Waiter.waitUntilElementIsVisible(waitingForEnemyNotificationLoc);
+        Waiter.waitUntilElementIsVisible(enemyMoveFirstNotificationLoc);
     }
 
-    public By getWaitingForEnemyNotificationLoc() {
-        return waitingForEnemyNotificationLoc;
-    }
-
-    public By getEnemyMoveFirstNotificationLoc() {
-        return enemyMoveFirstNotificationLoc;
-    }
-
-    public By getEnemyMoveNotificationLoc() {
-        return enemyMoveNotificationLoc;
+    public void waitWhileEnemyMoves() {
+        Waiter.waitUntilElementIsVisible(enemyMoveNotificationLoc);
     }
 
     private Label getLabelYouWin() {

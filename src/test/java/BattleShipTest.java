@@ -1,5 +1,5 @@
-import app.pageObject.GamePage;
-import app.pageObject.MainPage;
+import app.pageObject.pages.GamePage;
+import app.pageObject.pages.MainPage;
 import app.steps.Step;
 import framework.base.BaseTest;
 import framework.browser.Browser;

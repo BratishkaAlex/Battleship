@@ -1,23 +1,25 @@
-package app.pageObject;
+package app.pageObject.pages;
 
-import app.forms.NotificationArea;
+import app.pageObject.forms.NotificationArea;
 import framework.elements.Button;
 import framework.utils.Waiter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementClickInterceptedException;
 
 import static app.enums.CellStatus.CellStatuses;
+import static app.enums.Direction.Directions;
+import static app.enums.Direction.Directions.*;
 import static framework.base.BaseElement.countOfSuchElements;
+import static framework.elements.elementsAttributes.Attributes.CLASS;
 import static framework.utils.LoggerUtil.LOGGER;
 import static framework.utils.MathUtils.getRandomInt;
 
 public class GamePage {
-    private final int MIN_FIELD_BORDER = 0;
-    private final int MAX_FIELD_BORDER = 9;
-    private final String CLASS = "class";
+    private static final int MIN_FIELD_BORDER = 0;
+    private static final int MAX_FIELD_BORDER = 9;
+    private final static String EMPTY_RANDOM_CELL_PATTERN = "(//div[contains(@class,'battlefield__rival')]//td[contains(@class,'battlefield-cell__empty')])[%d]";
+    private final static String CELL_BY_X_Y_PATTERN = "//div[contains(@class, 'battlefield battlefield__rival')]//div[@data-x='%d' and @data-y='%d']//..";
     private NotificationArea notificationArea;
-    private String PATTERN_FOR_EMPTY_RANDOM_CELL = "(//div[contains(@class,'battlefield__rival')]//td[contains(@class,'battlefield-cell__empty')])[%d]";
-    private String PATTERN_FOR_CELL_BY_X_Y = "//div[contains(@class, 'battlefield battlefield__rival')]//div[@data-x='%d' and @data-y='%d']//..";
     private By emptyEnemyCellsLoc = By.cssSelector(".battlefield__rival .battlefield-table .battlefield-cell__empty");
 
     public GamePage() {
@@ -29,7 +31,7 @@ public class GamePage {
     }
 
     public void run() {
-        waitForEnemy();
+        notificationArea.waitForEnemyJoinedTheGame();
         runByDiagonal(0, 3);
         runByDiagonal(0, 7);
         runByDiagonal(2, 9);
@@ -44,12 +46,12 @@ public class GamePage {
 
     private void randomShots() {
         while (countOfSuchElements(emptyEnemyCellsLoc) > 0) {
-            Waiter.waitUntilElementIsVisible(notificationArea.getEnemyMoveNotificationLoc());
+            notificationArea.waitWhileEnemyMoves();
             if (notificationArea.checkForEndGameNotification()) {
                 break;
             }
             try {
-                getEnemyCell(By.xpath(String.format(PATTERN_FOR_EMPTY_RANDOM_CELL, getRandomInt(countOfSuchElements(emptyEnemyCellsLoc)) + 1))).click();
+                getEnemyCell(By.xpath(String.format(EMPTY_RANDOM_CELL_PATTERN, getRandomInt(countOfSuchElements(emptyEnemyCellsLoc)) + 1))).click();
                 LOGGER.info("Random shot");
             } catch (ElementClickInterceptedException e) {
                 LOGGER.warn("Prevent ElementClickInterceptedException");
@@ -61,7 +63,7 @@ public class GamePage {
     private void runByDiagonal(int x, int y) {
         int border = y + 1;
         for (; x < border; x++, y--) {
-            Waiter.waitUntilElementIsVisible(notificationArea.getEnemyMoveNotificationLoc());
+            notificationArea.waitWhileEnemyMoves();
             if (notificationArea.checkForEndGameNotification()) {
                 break;
             }
@@ -81,17 +83,14 @@ public class GamePage {
     }
 
     private void finishEnemyShip(int x, int y) {
-        moveRight(x, y);
-        Waiter.waitUntilElementIsVisible(notificationArea.getEnemyMoveNotificationLoc());
-        moveLeft(x, y);
-        Waiter.waitUntilElementIsVisible(notificationArea.getEnemyMoveNotificationLoc());
-        moveUp(x, y);
-        Waiter.waitUntilElementIsVisible(notificationArea.getEnemyMoveNotificationLoc());
-        moveDown(x, y);
+        moveByDirection(RIGHT, x + 1, y);
+        moveByDirection(LEFT, x - 1, y);
+        moveByDirection(UP, x, y - 1);
+        moveByDirection(DOWN, x, y + 1);
     }
 
     private boolean hitEnemyShip(int x, int y) {
-        Button enemyCell = getEnemyCell(By.xpath(String.format(PATTERN_FOR_CELL_BY_X_Y, x, y)));
+        Button enemyCell = getEnemyCell(By.xpath(String.format(CELL_BY_X_Y_PATTERN, x, y)));
         if (checkForEmptyCell(enemyCell)) {
             enemyCell.click();
             Waiter.waitWhileElementProcessing(enemyCell);
@@ -101,58 +100,30 @@ public class GamePage {
         }
     }
 
-    private void moveRight(int x, int y) {
-        while (x < MAX_FIELD_BORDER) {
+    private void moveByDirection(Directions direction, int x, int y) {
+        notificationArea.waitWhileEnemyMoves();
+        while (x <= MAX_FIELD_BORDER && x >= MIN_FIELD_BORDER && y <= MAX_FIELD_BORDER && y >= MIN_FIELD_BORDER) {
             if (notificationArea.checkForEndGameNotification()) {
                 break;
             }
-            x++;
             if (!hitEnemyShip(x, y)) {
                 break;
             }
-        }
-    }
-
-    private void moveLeft(int x, int y) {
-        while (x > MIN_FIELD_BORDER) {
-            if (notificationArea.checkForEndGameNotification()) {
-                break;
-            }
-            x--;
-            if (!hitEnemyShip(x, y)) {
-                break;
-            }
-        }
-    }
-
-    private void moveUp(int x, int y) {
-        while (y > MIN_FIELD_BORDER) {
-            if (notificationArea.checkForEndGameNotification()) {
-                break;
-            }
-            y--;
-            if (!hitEnemyShip(x, y)) {
-                break;
+            switch (direction) {
+                case RIGHT:
+                    x++;
+                    break;
+                case LEFT:
+                    x--;
+                    break;
+                case UP:
+                    y--;
+                    break;
+                case DOWN:
+                    y++;
+                    break;
             }
         }
-    }
-
-    private void moveDown(int x, int y) {
-        while (y < MAX_FIELD_BORDER) {
-            if (notificationArea.checkForEndGameNotification()) {
-                break;
-            }
-            y++;
-            if (!hitEnemyShip(x, y)) {
-                break;
-            }
-        }
-    }
-
-    private void waitForEnemy() {
-        Waiter.waitUntilElementIsVisible(notificationArea.getConnectionNotificationLoc());
-        Waiter.waitUntilElementIsVisible(notificationArea.getWaitingForEnemyNotificationLoc());
-        Waiter.waitUntilElementIsVisible(notificationArea.getEnemyMoveFirstNotificationLoc());
     }
 
     private Button getEnemyCell(By loc) {

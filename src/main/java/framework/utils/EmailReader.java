@@ -2,15 +2,7 @@ package framework.utils;
 
 import framework.models.Mail;
 
-import javax.mail.Authenticator;
-import javax.mail.BodyPart;
-import javax.mail.Flags;
-import javax.mail.Folder;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Store;
+import javax.mail.*;
 import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
 

@@ -1,6 +1,6 @@
 package app.steps;
 
-import app.pageObject.MainPage;
+import app.pageObject.pages.MainPage;
 import framework.utils.MathUtils;
 
 public class Step {
