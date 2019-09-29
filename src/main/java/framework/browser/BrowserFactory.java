@@ -15,9 +15,10 @@ import java.util.HashMap;
 import static framework.utils.LoggerUtil.LOGGER;
 
 class BrowserFactory {
+
     static WebDriver getDriver() {
         WebDriver driver;
-        String browser = PropertyManager.getConfigProperty("browser");
+        String browser = System.getenv("BROWSER");
         switch (browser) {
             case "chrome":
                 LOGGER.info("Creating instance of ChromeDriver");
